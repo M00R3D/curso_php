@@ -6,6 +6,14 @@
     <title>Document</title>
 </head>
 <body>
-    <?php echo "Hello, World this is a test"; ?>
+    <?php 
+    $var1 = "this is var1";
+    $var2 = "this is var2";
+    $var3 = "this is var3";
+
+    echo $var1 . $var2 . $var3; 
+    print "<br>";
+    print $var1 . " " . $var2 . " " . $var3;
+    ?>
 </body>
 </html>
