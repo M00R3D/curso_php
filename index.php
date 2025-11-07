@@ -21,11 +21,35 @@
 
     // echo threeRandomNumbers(1, 100);
 
-    $varLocal = "this is a local variable";
-    include("includevar.php");
-    testScope();
+    // $varLocal = "this is a local variable";
+    // include("includevar.php");
+    // testScope();
     //a pesar de llamar a la funcion, la variable local no cambia su valor fuera de la funcion
-    echo $varLocal;
+    // echo $varLocal;
+
+    function staticVariables() {
+        static $count = 0;
+        $count++;
+        echo "This function has been called $count times.<br>";    
+    }
+
+    staticVariables();
+    staticVariables();
+    staticVariables();
+    staticVariables();
+
+
+    echo "<br>";
+
+    function nonStaticVariables() {
+        $count = 0;
+        $count++;
+        echo "This function has been called $count times.<br>";    
+    }
+    nonStaticVariables();
+    nonStaticVariables();
+    nonStaticVariables();
+    nonStaticVariables();
     ?>
 </body>
 </html>
