@@ -22,9 +22,7 @@
     // echo threeRandomNumbers(1, 100);
 
     $varLocal = "this is a local variable";
-        function testScope() {
-            $varLocal = "this is a local variable inside the function";
-        }
+    include("includevar.php");
     testScope();
     //a pesar de llamar a la funcion, la variable local no cambia su valor fuera de la funcion
     echo $varLocal;
