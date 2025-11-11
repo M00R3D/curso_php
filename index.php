@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<style>
+    .highlight{
+        color: red;
+        font-weight: bold;
+    }
+
+</style>
 <body>
     <?php 
     // function threeRandomNumbers($min, $max) {
@@ -27,29 +34,43 @@
     //a pesar de llamar a la funcion, la variable local no cambia su valor fuera de la funcion
     // echo $varLocal;
 
-    function staticVariables() {
-        static $count = 0;
-        $count++;
-        echo "This function has been called $count times.<br>";    
+    // function staticVariables() {
+    //     static $count = 0;
+    //     $count++;
+    //     echo "This function has been called $count times.<br>";    
+    // }
+
+    // staticVariables();
+    // staticVariables();
+    // staticVariables();
+    // staticVariables();
+
+
+    // echo "<br>";
+
+    // function nonStaticVariables() {
+    //     $count = 0;
+    //     $count++;
+    //     echo "This function has been called $count times.<br>";    
+    // }
+    // nonStaticVariables();
+    // nonStaticVariables();
+    // nonStaticVariables();
+    // nonStaticVariables();
+    $var1="highlight";
+    $var2="HIGHLIGHT";
+    echo "<p class='$var1'>this is a phrase $var1</p>";
+    echo "<p class=\"$var1\">this is a phrase</p>";
+
+    $result = strcmp($var1,$var2);
+    if ($result > 0) {
+        echo "<p>$var1 es mayor que $var2</p>";
+    } elseif ($result < 0) {
+        echo "<p>$var1 es menor que $var2</p>";
+    } else {
+        echo "<p>$var1 es igual a $var2</p>";
     }
-
-    staticVariables();
-    staticVariables();
-    staticVariables();
-    staticVariables();
-
-
-    echo "<br>";
-
-    function nonStaticVariables() {
-        $count = 0;
-        $count++;
-        echo "This function has been called $count times.<br>";    
-    }
-    nonStaticVariables();
-    nonStaticVariables();
-    nonStaticVariables();
-    nonStaticVariables();
+    echo "<p>Resultado de la comparación: $result</p>";
     ?>
 </body>
 </html>
