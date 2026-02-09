@@ -1,0 +1,65 @@
+[33mcommit 37f9ac32d3bc4ec06b0788eaba00429a62562bc7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdev[m[33m, [m[1;31morigin/dev[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: job moore <jobmurdan@ohtmail.com>
+Date:   Thu Feb 5 17:25:38 2026 -0700
+
+    operadores matematicos
+
+[33mcommit aae3a4fb7158c385bc230ff96040519cd352c4c9[m
+Author: job moore <jobmurdan@ohtmail.com>
+Date:   Thu Feb 5 15:47:38 2026 -0700
+
+    constantes en clases
+
+[33mcommit 07e7547ad113d9c27d884559b4358f533404ca06[m
+Author: job moore <jobmurdan@ohtmail.com>
+Date:   Thu Feb 5 15:44:34 2026 -0700
+
+    constantes con define, imprimir constantes predefinidas
+
+[33mcommit c1b564e6f0f7c2f2e5179e9497e08e094f440fce[m
+Author: job moore <jobmurdan@ohtmail.com>
+Date:   Wed Feb 4 15:48:53 2026 -0700
+
+    validacion con variables y comparador           usando
+
+[33mcommit 30f77083dc04cef9d4d2b9c89a397717a5c5b3e3[m
+Author: M00R3D <jobmurdan@hotmail.com>
+Date:   Mon Nov 10 22:40:55 2025 -0700
+
+    strings
+
+[33mcommit 63cd1de6c7e721d75deecb2b403784a1b8ecfc0d[m
+Author: M00R3D <jobmurdan@hotmail.com>
+Date:   Fri Nov 7 08:14:39 2025 -0700
+
+    variables estaticas
+
+[33mcommit 51538c8d30311189ce37c0920d2a5f309aed8593[m
+Author: M00R3D <jobmurdan@hotmail.com>
+Date:   Fri Nov 7 07:09:53 2025 -0700
+
+    variable global y usar funcion desde otro archivo con include
+
+[33mcommit aafcd87549c3063fb1914ac4899b91ab30640a2c[m
+Author: M00R3D <jobmurdan@hotmail.com>
+Date:   Fri Nov 7 07:03:20 2025 -0700
+
+    variable local
+
+[33mcommit 99f2e1662a3566247cf837a43d13e1c3eb61e058[m
+Author: M00R3D <jobmurdan@hotmail.com>
+Date:   Wed Nov 5 22:32:53 2025 -0700
+
+    funciones y comentarios
+
+[33mcommit e3d48bd08a1c7dd33a0d1ee1982df3314e260434[m
+Author: M00R3D <jobmurdan@hotmail.com>
+Date:   Wed Nov 5 22:19:22 2025 -0700
+
+    variables, echo y print
+
+[33mcommit 8c0c171705f4629f3f55a79f0667c41693d6d4de[m
+Author: M00R3D <jobmurdan@hotmail.com>
+Date:   Wed Nov 5 21:41:19 2025 -0700
+
+    push uno
