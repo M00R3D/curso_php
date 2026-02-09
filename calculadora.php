@@ -46,5 +46,15 @@
                         echo "<p>No se puede calcular el modulo entre cero</p>";
                     }
                 }
+                if(!strcmp($operador, "incremento"))
+                {
+                    $resultado = $n1 + 1;
+                    echo "<p>El resultado del incremento es: " . $resultado . "</p>";
+                }
+                if(!strcmp($operador, "decremento"))
+                {
+                    $resultado = $n1 - 1;
+                    echo "<p>El resultado del decremento es: " . $resultado . "</p>";
+                }
             }
     ?>

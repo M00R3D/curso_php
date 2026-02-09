@@ -1,3 +1,4 @@
+<?php include 'calculadora.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +7,7 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="calculadora.php" method="post" name="datos_num" id="datos_num">
+    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" name="datos_num" id="datos_num">
         <table width="30%">
             <input type="text" name="num1" id="num1" placeholder="Ingrese el primer numero">
             <input type="text" name="num2" id="num2" placeholder="Ingrese el segundo numero">
@@ -16,6 +17,8 @@
                 <option value="multiplicacion">Multiplicacion</option>
                 <option value="division">Division</option>
                 <option value="modulo">Modulo</option>
+                <option value="incremento">Incremento</option>
+                <option value="decremento">Decremento</option>
             </select>
             <input type="submit" value="Calcular" name="calculando" id="calculando">
         </table>
