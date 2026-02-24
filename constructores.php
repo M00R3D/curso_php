@@ -31,41 +31,40 @@
         //     $this->cantidad = 10;
         //     $this->categoria = "Electronics";
         // }
-    }
+        public function getNombre() {
+            return $this->nombre;
+        }
+        public function getDescripcion() {
+            return $this->descripcion;
+        }
+        public function getPrecio() {
+            return $this->precio;
+        }
+        public function getCantidad() {
+            return $this->cantidad;
+        }
+        public function getCategoria() {
+            return $this->categoria;
+        }
 
-    public function getNombre() {
-        return $this->nombre;
-    }
-    public function getDescripcion() {
-        return $this->descripcion;
-    }
-    public function getPrecio() {
-        return $this->precio;
-    }
-    public function getCantidad() {
-        return $this->cantidad;
-    }
-    public function getCategoria() {
-        return $this->categoria;
-    }
-
-    public function setNombre($nombre) {
-        $this->nombre = $nombre;
-    }
-    public function setDescripcion($descripcion) {
-        $this->descripcion = $descripcion;
-    }
-    public function setPrecio($precio) {
-        $this->precio = $precio;
-    }
-    public function setCantidad($cantidad) {
-        $this->cantidad = $cantidad;
-    }
-    public function setCategoria($categoria) {
-        $this->categoria = $categoria;
-    }
+        public function setNombre($nombre) {
+            $this->nombre = $nombre;
+        }
+        public function setDescripcion($descripcion) {
+            $this->descripcion = $descripcion;
+        }
+        public function setPrecio($precio) {
+            $this->precio = $precio;
+        }
+        public function setCantidad($cantidad) {
+            $this->cantidad = $cantidad;
+        }
+        public function setCategoria($categoria) {
+            $this->categoria = $categoria;
+        }
 
 
+    }
     ?>
 </body>
 </html>
