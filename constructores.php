@@ -49,22 +49,75 @@
 
         public function setNombre($nombre) {
             $this->nombre = $nombre;
+            echo "<p>El nombre del producto se ha cambiado a: " . $this->nombre . "</p>";
         }
         public function setDescripcion($descripcion) {
             $this->descripcion = $descripcion;
+            echo "<p>La descripcion del producto se ha cambiado a: " . $this->descripcion . "</p>";
         }
         public function setPrecio($precio) {
             $this->precio = $precio;
+            echo "<p>El precio del producto se ha cambiado a: " . $this->precio . "</p>";
         }
         public function setCantidad($cantidad) {
             $this->cantidad = $cantidad;
+            echo "<p>La cantidad del producto se ha cambiado a: " . $this->cantidad . "</p>";
         }
         public function setCategoria($categoria) {
             $this->categoria = $categoria;
+            echo "<p>La categoria del producto se ha cambiado a: " . $this->categoria . "</p>";
         }
 
 
     }
+
+    class Objeto_Especial extends Objeto {
+        private string $color;
+        private string $tamaño;
+
+        public function __construct($id, $nombre, $descripcion, $precio, $cantidad, $categoria, $color, $tamaño) {
+            parent::__construct($id, $nombre, $descripcion, $precio, $cantidad, $categoria);
+            $this->color = $color;
+            $this->tamaño = $tamaño;
+        }
+
+        public function getColor() {
+            return $this->color;
+        }
+
+        public function getTamaño() {
+            return $this->tamaño;
+        }
+
+        public function setColor($color) {
+            $this->color = $color;
+            echo "<p>El color del producto se ha cambiado a: " . $this->color . "</p>";
+        }
+
+        public function setTamaño($tamaño) {
+            $this->tamaño = $tamaño;
+            echo "<p>El tamaño del producto se ha cambiado a: " . $this->tamaño . "</p>";
+        }
+    }
+
+    $agua = new Objeto(1, "agua", "un agua pura y cristalina", 20.0, 100, "bebidas");
+    echo "<p>El nombre del producto es: " . $agua->getNombre() . "</p>";
+    $agua->setPrecio(25.0);
+    echo "<p>El precio del producto es: " . $agua->getPrecio() . "</p>";
+    $agua->setCantidad(120);
+    echo "<p>La cantidad del producto es: " . $agua->getCantidad() . "</p>";
+    $agua->setCategoria("bebidas naturales");
+    echo "<p>La categoria del producto es: " . $agua->getCategoria() . "</p>";  
+
+
+    $jugo = new Objeto_Especial(1, "jugo de naranja", "un jugo de naranja natural", 50.0, 20, "bebidas", "naranja", "500ml");
+    echo "<p>El nombre del producto es: " . $jugo->getNombre() . "</p>";
+    $jugo->setPrecio(60.0);
+    echo "<p>El precio del producto es: " . $jugo->getPrecio() . "</p>";
+    $jugo->setColor("amarillo");
+    echo "<p>El color del producto es: " . $jugo->getColor() . "</p>";
+    $jugo->setTamaño("600ml");
+    echo "<p>El tamaño del producto es: " . $jugo->getTamaño() . "</p>";
     ?>
 </body>
 </html>
