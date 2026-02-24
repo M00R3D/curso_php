@@ -100,24 +100,6 @@
         }
     }
 
-    $agua = new Objeto(1, "agua", "un agua pura y cristalina", 20.0, 100, "bebidas");
-    echo "<p>El nombre del producto es: " . $agua->getNombre() . "</p>";
-    $agua->setPrecio(25.0);
-    echo "<p>El precio del producto es: " . $agua->getPrecio() . "</p>";
-    $agua->setCantidad(120);
-    echo "<p>La cantidad del producto es: " . $agua->getCantidad() . "</p>";
-    $agua->setCategoria("bebidas naturales");
-    echo "<p>La categoria del producto es: " . $agua->getCategoria() . "</p>";  
-
-
-    $jugo = new Objeto_Especial(1, "jugo de naranja", "un jugo de naranja natural", 50.0, 20, "bebidas", "naranja", "500ml");
-    echo "<p>El nombre del producto es: " . $jugo->getNombre() . "</p>";
-    $jugo->setPrecio(60.0);
-    echo "<p>El precio del producto es: " . $jugo->getPrecio() . "</p>";
-    $jugo->setColor("amarillo");
-    echo "<p>El color del producto es: " . $jugo->getColor() . "</p>";
-    $jugo->setTamaño("600ml");
-    echo "<p>El tamaño del producto es: " . $jugo->getTamaño() . "</p>";
     ?>
 </body>
 </html>
