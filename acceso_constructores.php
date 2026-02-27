@@ -15,8 +15,12 @@
     // echo "<p>La cantidad del producto es: " . $objeto1->getCantidad() . "</p>";
     // echo "<p>La categoria del producto es: " . $objeto1->getCategoria() . "</p>";
 
-    $objeto1->nombre="intento de cambio de nombre sin usar el setter";
+    // $objeto1->nombre="intento de cambio de nombre sin usar el setter";
     //aqui saldra error porque nombre es private, lo que quiere decir que solo se puede acceder a esa propiedad dentro de la clase, no desde fuera de ella, por eso es necesario usar el setter para cambiar el valor de esa propiedad
+    $objeto1->setNombre("gamer mouse");
+
+    $objeto2 = new Objeto_Especial(2, "gamer mouse", "A high-quality gaming mouse", 150.0, 20, "Electronics", "black", "medium");
+    echo "<p>El nombre del producto es: " . $objeto2->getNombre() . "</p>";
     ?>
 </body>
 </html>
