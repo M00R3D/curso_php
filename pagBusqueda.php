@@ -1,3 +1,4 @@
+<?php ob_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,43 +8,105 @@
 </head>
 <body>
     <?php
-    $db_host = "localhost";
-    $db_user = "root";
-    $db_pass = "";
-    $db_name = "cursophp";
+    $db_host="localhost";
+    $db_user="root";
+    $db_pass="";
+    $db_name="cursophp";
 
     $x = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
     if (!$x) {
         die("Error de conexión: " . mysqli_connect_error());
     }
     mysqli_set_charset($x, "utf8");
+    mysqli_select_db($x, $db_name) or die("Error no se encuentra la base de datos: " . mysqli_error($x));
 
     $q = isset($_GET['q']) ? trim($_GET['q']) : '';
 
-    if ($q !== '') {
-        $sql = "SELECT id, nombre, correo FROM usuarios WHERE nombre LIKE ? OR correo LIKE ?";//en esta linea se usa LIKE ? porque se va a usar una consulta preparada, y los signos de interrogación son marcadores de posición para los parámetros que se van a enlazar posteriormente. Esto ayuda a prevenir inyecciones SQL y mejora la seguridad de la aplicación.
-        $stmt = mysqli_prepare($x, $sql);//en esta línea se prepara la consulta SQL utilizando la función mysqli_prepare(). El primer argumento es la conexión a la base de datos ($x) y el segundo argumento es la consulta SQL con los marcadores de posición (?). La función devuelve un objeto de declaración preparado ($stmt) que se puede usar para ejecutar la consulta con los parámetros enlazados posteriormente.
-         if ($stmt) {
-            //en este bloque se verifica si la preparación de la consulta fue exitosa. Si $stmt es verdadero, significa que la consulta se preparó correctamente y se puede proceder a enlazar los parámetros y ejecutar la consulta. Si $stmt es falso, significa que hubo un error al preparar la consulta, y en ese caso se asigna false a $result para indicar que no se obtuvieron resultados.
+    // Mensajes para feedback al usuario
+    $message = '';
+    $msg_type = '';
+
+    // Mostrar mensaje tras redirección PRG
+    if (isset($_GET['added']) && $_GET['added'] == '1') {
+        $message = 'Usuario agregado correctamente.';
+        $msg_type = 'success';
+    }
+
+    // Manejar envío del formulario de agregar usuario
+    if (isset($_POST['enviando'])) {
+        $nombre = isset($_POST['name']) ? trim($_POST['name']) : '';
+        $correo = isset($_POST['email']) ? trim($_POST['email']) : '';
+
+        if ($nombre === '' || $correo === '') {
+            $message = 'Nombre y correo son obligatorios.';
+            $msg_type = 'error';
+        } elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+            $message = 'Correo no es válido.';
+            $msg_type = 'error';
+        } else {
+            $insert_sql = "INSERT INTO usuarios (name, email) VALUES (?, ?)";
+            $insert_stmt = mysqli_prepare($x, $insert_sql);
+            if ($insert_stmt) {
+                mysqli_stmt_bind_param($insert_stmt, 'ss', $nombre, $correo);
+                if (mysqli_stmt_execute($insert_stmt)) {
+                    mysqli_stmt_close($insert_stmt);
+                    // PRG: evitar reenvío del formulario al recargar
+                    $redirect_url = 'pagBusqueda.php';
+                    // conservar posible búsqueda
+                    if ($q !== '') {
+                        $redirect_url .= '?q=' . urlencode($q) . '&added=1';
+                    } else {
+                        $redirect_url .= '?added=1';
+                    }
+                    header('Location: ' . $redirect_url);
+                    exit;
+                } else {
+                    $message = 'Error al agregar usuario: ' . mysqli_stmt_error($insert_stmt);
+                    $msg_type = 'error';
+                }
+                mysqli_stmt_close($insert_stmt);
+            } else {
+                $message = 'Error en la consulta de inserción.';
+                $msg_type = 'error';
+            }
+        }
+    }
+
+    // Consulta de búsqueda o listado completo
+    $stmt_busqueda = null;
+    if (isset($_GET['buscar']) && $q !== '') {
+        $sql = "SELECT id, name, email FROM usuarios WHERE name LIKE ? OR email LIKE ?";
+        $stmt_busqueda = mysqli_prepare($x, $sql);
+        if ($stmt_busqueda) {
             $like = "%" . $q . "%";
-            mysqli_stmt_bind_param($stmt, 'ss', $like, $like);
-            mysqli_stmt_execute($stmt);
-            $result = mysqli_stmt_get_result($stmt);
+            mysqli_stmt_bind_param($stmt_busqueda, 'ss', $like, $like);
+            mysqli_stmt_execute($stmt_busqueda);
+            $result = mysqli_stmt_get_result($stmt_busqueda);
         } else {
             $result = false;
         }
     } else {
-        $result = mysqli_query($x, "SELECT id, nombre, correo FROM usuarios");
+        $result = mysqli_query($x, "SELECT id, name, email FROM usuarios");
     }
     ?>
 
     <h1>Búsqueda de usuarios</h1>
     <form method="get" action="">
         <input type="text" name="q" placeholder="Buscar por nombre o correo" value="<?php echo htmlspecialchars($q); ?>">
-        <button type="submit">Buscar</button>
+        <button type="submit" name="buscar" value="1">Buscar</button>
         <?php if($q !== ''): ?>
             <a href="pagBusqueda.php">Limpiar</a>
         <?php endif; ?>
+    </form>
+
+    <h2>Agregar usuario</h2>
+    <?php if ($message !== ''): ?>
+        <p style="color: <?php echo $msg_type === 'success' ? 'green' : 'red'; ?>"><?php echo htmlspecialchars($message); ?></p>
+    <?php endif; ?>
+    <form method="post" action="">
+        <label>Nombre: <input type="text" name="name" required></label>
+        <label>Correo: <input type="email" name="email" required></label>
+        <button type="submit" name="enviando" value="Agregar">Agregar</button>
     </form>
 
     <?php if ($result && mysqli_num_rows($result) > 0): ?>
@@ -56,11 +119,11 @@
                 </tr>
             </thead>
             <tbody>
-                <?php while ($fila = mysqli_fetch_assoc($result)): ?>//aqui usamos while para recorrer cada fila del resultado de la consulta. La función mysqli_fetch_assoc() devuelve un array asociativo que representa la fila actual del resultado, donde las claves son los nombres de las columnas. El bucle continúa hasta que no haya más filas para procesar.
+                <?php while ($fila = mysqli_fetch_assoc($result)): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($fila['id']); ?></td>
-                        <td><?php echo htmlspecialchars($fila['nombre']); ?></td>
-                        
+                        <td><?php echo htmlspecialchars($fila['name']); ?></td>
+                        <td><?php echo htmlspecialchars($fila['email']); ?></td>
                     </tr>
                 <?php endwhile; ?>
             </tbody>
@@ -70,8 +133,8 @@
     <?php endif; ?>
 
     <?php
-    if (isset($stmt) && $stmt) {
-        mysqli_stmt_close($stmt);
+    if (isset($stmt_busqueda) && $stmt_busqueda) {
+        mysqli_stmt_close($stmt_busqueda);
     }
     if (isset($result) && is_object($result)) {
         mysqli_free_result($result);
