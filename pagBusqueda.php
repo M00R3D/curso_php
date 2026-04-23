@@ -5,6 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .modal-box {
+            background: #fff;
+            width: 90%;
+            max-width: 420px;
+            margin: 80px auto;
+            padding: 16px;
+            border: 1px solid #999;
+        }
+    </style>
 </head>
 <body>
     <?php
@@ -33,6 +52,49 @@
     } elseif (isset($_GET['deleted']) && $_GET['deleted'] == '1') {
         $message = 'Usuario eliminado correctamente.';
         $msg_type = 'success';
+    } elseif (isset($_GET['updated']) && $_GET['updated'] == '1') {
+        $message = 'Usuario actualizado correctamente.';
+        $msg_type = 'success';
+    }
+
+    // Manejar formulario de editar usuario
+    if (isset($_POST['accion']) && $_POST['accion'] == 'editar') {
+        $id_edit = isset($_POST['id_usuario']) ? intval($_POST['id_usuario']) : 0;
+        $nombre_edit = isset($_POST['name']) ? trim($_POST['name']) : '';
+        $correo_edit = isset($_POST['email']) ? trim($_POST['email']) : '';
+
+        if ($id_edit <= 0 || $nombre_edit === '' || $correo_edit === '') {
+            $message = 'Datos inválidos para editar usuario.';
+            $msg_type = 'error';
+        } elseif (!filter_var($correo_edit, FILTER_VALIDATE_EMAIL)) {
+            $message = 'Correo no es válido.';
+            $msg_type = 'error';
+        } else {
+            $upd_sql = "UPDATE usuarios SET name = ?, email = ? WHERE id = ?";
+            $upd_stmt = mysqli_prepare($x, $upd_sql);
+            if ($upd_stmt) {
+                mysqli_stmt_bind_param($upd_stmt, 'ssi', $nombre_edit, $correo_edit, $id_edit);
+                if (mysqli_stmt_execute($upd_stmt)) {
+                    mysqli_stmt_close($upd_stmt);
+                    // PRG después de editar
+                    $redirect_url = 'pagBusqueda.php';
+                    if ($q !== '') {
+                        $redirect_url .= '?q=' . urlencode($q) . '&updated=1';
+                    } else {
+                        $redirect_url .= '?updated=1';
+                    }
+                    header('Location: ' . $redirect_url);
+                    exit;
+                } else {
+                    $message = 'Error al actualizar usuario: ' . mysqli_stmt_error($upd_stmt);
+                    $msg_type = 'error';
+                }
+                mysqli_stmt_close($upd_stmt);
+            } else {
+                $message = 'Error en la consulta de actualización.';
+                $msg_type = 'error';
+            }
+        }
     }
 
     // Manejar formularios (alta / eliminación) en estilo clásico
@@ -161,6 +223,13 @@
                         <td><?php echo htmlspecialchars($fila['name']); ?></td>
                         <td><?php echo htmlspecialchars($fila['email']); ?></td>
                         <td>
+                            <input
+                                type="button"
+                                value="Editar"
+                                data-id="<?php echo htmlspecialchars($fila['id']); ?>"
+                                data-name="<?php echo htmlspecialchars($fila['name'], ENT_QUOTES); ?>"
+                                data-email="<?php echo htmlspecialchars($fila['email'], ENT_QUOTES); ?>"
+                                onclick="abrirModalEditar(this)">
                             <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline">
                                 <input type="hidden" name="accion" value="eliminar">
                                 <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($fila['id']); ?>">
@@ -174,6 +243,46 @@
     <?php else: ?>
         <p>No se encontraron usuarios.</p>
     <?php endif; ?>
+
+    <div id="modalEditar" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Editar usuario</h3>
+            <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                <input type="hidden" name="accion" value="editar">
+                <input type="hidden" name="id_usuario" id="edit_id" value="">
+                <p>
+                    <label>Nombre:</label>
+                    <input type="text" name="name" id="edit_name" required>
+                </p>
+                <p>
+                    <label>Correo:</label>
+                    <input type="email" name="email" id="edit_email" required>
+                </p>
+                <input type="submit" value="Guardar cambios">
+                <input type="button" value="Cancelar" onclick="cerrarModalEditar()">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function abrirModalEditar(btn) {
+            document.getElementById('edit_id').value = btn.getAttribute('data-id');
+            document.getElementById('edit_name').value = btn.getAttribute('data-name');
+            document.getElementById('edit_email').value = btn.getAttribute('data-email');
+            document.getElementById('modalEditar').style.display = 'block';
+        }
+
+        function cerrarModalEditar() {
+            document.getElementById('modalEditar').style.display = 'none';
+        }
+
+        window.onclick = function (event) {
+            var modal = document.getElementById('modalEditar');
+            if (event.target === modal) {
+                cerrarModalEditar();
+            }
+        };
+    </script>
 
     <?php
     if (isset($stmt_busqueda) && $stmt_busqueda) {
