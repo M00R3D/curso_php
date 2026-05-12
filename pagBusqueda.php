@@ -1,4 +1,5 @@
 <?php ob_start(); ?>
+<!-- el ob_start(); se usa para para activar el almacenamiento en búfer de salida (output buffering). Esto permite que el script guarde todo el contenido generado (HTML, echo, print) en un búfer interno en lugar de enviarlo inmediatamente al navegador. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
