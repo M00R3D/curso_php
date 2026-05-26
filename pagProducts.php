@@ -48,13 +48,18 @@ if (isset($_GET['deleted'])) {
 if (isset($_POST['accion'])) {
     $accion = $_POST['accion'];
     if ($accion == 'insertar' || $accion == 'crear') {
+        $codigo_articulo = isset($_POST['codigo_articulo']) ? trim($_POST['codigo_articulo']) : '';
+        $seccion = isset($_POST['seccion']) ? trim($_POST['seccion']) : '';
         $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
         $precio = isset($_POST['precio']) ? floatval($_POST['precio']) : 0;
+        $fecha = isset($_POST['fecha']) ? trim($_POST['fecha']) : '';
+        $importado = isset($_POST['importado']) ? intval($_POST['importado']) : 0;
+        $pais_origen = isset($_POST['pais_origen']) ? trim($_POST['pais_origen']) : '';
         $descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
 
-        $stmt = mysqli_prepare($x, "INSERT INTO productos (nombre, precio, descripcion) VALUES (?, ?, ?)");
+        $stmt = mysqli_prepare($x, "INSERT INTO productos (codigo_articulo, seccion, nombre, precio, fecha, importado, pais_origen, descripcion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         if ($stmt) {
-            mysqli_stmt_bind_param($stmt, "sds", $nombre, $precio, $descripcion);
+            mysqli_stmt_bind_param($stmt, "sssdsiss", $codigo_articulo, $seccion, $nombre, $precio, $fecha, $importado, $pais_origen, $descripcion);
             $ok = mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);
         } else {
@@ -70,13 +75,18 @@ if (isset($_POST['accion'])) {
         }
     } elseif ($accion == 'editar') {
         $id_edit = isset($_POST['id_edit']) ? intval($_POST['id_edit']) : 0;
+        $codigo_articulo_edit = isset($_POST['codigo_articulo_edit']) ? trim($_POST['codigo_articulo_edit']) : '';
+        $seccion_edit = isset($_POST['seccion_edit']) ? trim($_POST['seccion_edit']) : '';
         $nombre_edit = isset($_POST['nombre_edit']) ? trim($_POST['nombre_edit']) : '';
         $precio_edit = isset($_POST['precio_edit']) ? floatval($_POST['precio_edit']) : 0;
+        $fecha_edit = isset($_POST['fecha_edit']) ? trim($_POST['fecha_edit']) : '';
+        $importado_edit = isset($_POST['importado_edit']) ? intval($_POST['importado_edit']) : 0;
+        $pais_origen_edit = isset($_POST['pais_origen_edit']) ? trim($_POST['pais_origen_edit']) : '';
         $descripcion_edit = isset($_POST['descripcion_edit']) ? trim($_POST['descripcion_edit']) : '';
 
-        $stmt = mysqli_prepare($x, "UPDATE productos SET nombre = ?, precio = ?, descripcion = ? WHERE id = ?");
+        $stmt = mysqli_prepare($x, "UPDATE productos SET codigo_articulo = ?, seccion = ?, nombre = ?, precio = ?, fecha = ?, importado = ?, pais_origen = ?, descripcion = ? WHERE id = ?");
         if ($stmt) {
-            mysqli_stmt_bind_param($stmt, "sdsi", $nombre_edit, $precio_edit, $descripcion_edit, $id_edit);
+            mysqli_stmt_bind_param($stmt, "sssdsissi", $codigo_articulo_edit, $seccion_edit, $nombre_edit, $precio_edit, $fecha_edit, $importado_edit, $pais_origen_edit, $descripcion_edit, $id_edit);
             $ok = mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);
         } else {
@@ -114,7 +124,7 @@ if (isset($_POST['accion'])) {
 
 // Fetch products
 $result = false;
-$stmt = mysqli_prepare($x, "SELECT id, nombre, precio, descripcion FROM productos ORDER BY id DESC");
+$stmt = mysqli_prepare($x, "SELECT id, codigo_articulo, seccion, nombre, precio, fecha, importado, pais_origen, descripcion FROM productos ORDER BY id DESC");
 if ($stmt) {
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
@@ -153,8 +163,16 @@ if ($stmt) {
     <h2>Agregar producto</h2>
     <form method="post" action="pagProducts.php">
         <input type="hidden" name="accion" value="insertar">
-        <input type="text" name="nombre" placeholder="Nombre" required>
+        <input type="text" name="codigo_articulo" placeholder="Código Artículo" required>
+        <input type="text" name="seccion" placeholder="Sección" required>
+        <input type="text" name="nombre" placeholder="Nombre Artículo" required>
         <input type="text" name="precio" placeholder="Precio" required>
+        <input type="date" name="fecha" required>
+        <select name="importado" required>
+            <option value="0">No importado</option>
+            <option value="1">Importado</option>
+        </select>
+        <input type="text" name="pais_origen" placeholder="País de Origen" required>
         <input type="text" name="descripcion" placeholder="Descripción">
         <button type="submit">Agregar</button>
     </form>
@@ -164,8 +182,13 @@ if ($stmt) {
         <thead>
             <tr>
                 <th>ID</th>
+                <th>Código</th>
+                <th>Sección</th>
                 <th>Nombre</th>
                 <th>Precio</th>
+                <th>Fecha</th>
+                <th>Importado</th>
+                <th>País Origen</th>
                 <th>Descripción</th>
                 <th>Acciones</th>
             </tr>
@@ -175,8 +198,13 @@ if ($stmt) {
         <?php while($row = mysqli_fetch_assoc($result)): ?>
             <tr id="row-<?php echo $row['id']; ?>">
                 <td><?php echo $row['id']; ?></td>
+                <td><?php echo htmlspecialchars($row['codigo_articulo']); ?></td>
+                <td><?php echo htmlspecialchars($row['seccion']); ?></td>
                 <td class="name-cell"><?php echo htmlspecialchars($row['nombre']); ?></td>
                 <td class="price-cell"><?php echo htmlspecialchars($row['precio']); ?></td>
+                <td><?php echo htmlspecialchars($row['fecha']); ?></td>
+                <td><?php echo intval($row['importado']) === 1 ? 'Sí' : 'No'; ?></td>
+                <td><?php echo htmlspecialchars($row['pais_origen']); ?></td>
                 <td class="description-cell"><?php echo htmlspecialchars($row['descripcion']); ?></td>
                 <td>
                     <div class="actions">
@@ -192,8 +220,16 @@ if ($stmt) {
                         <form method="post" action="pagProducts.php" class="form-inline">
                             <input type="hidden" name="accion" value="editar">
                             <input type="hidden" name="id_edit" value="<?php echo $row['id']; ?>">
+                            <input type="text" name="codigo_articulo_edit" value="<?php echo htmlspecialchars($row['codigo_articulo']); ?>" required>
+                            <input type="text" name="seccion_edit" value="<?php echo htmlspecialchars($row['seccion']); ?>" required>
                             <input type="text" name="nombre_edit" value="<?php echo htmlspecialchars($row['nombre']); ?>" required>
                             <input type="text" name="precio_edit" value="<?php echo htmlspecialchars($row['precio']); ?>" required>
+                            <input type="date" name="fecha_edit" value="<?php echo htmlspecialchars($row['fecha']); ?>" required>
+                            <select name="importado_edit" required>
+                                <option value="0" <?php echo intval($row['importado']) === 0 ? 'selected' : ''; ?>>No importado</option>
+                                <option value="1" <?php echo intval($row['importado']) === 1 ? 'selected' : ''; ?>>Importado</option>
+                            </select>
+                            <input type="text" name="pais_origen_edit" value="<?php echo htmlspecialchars($row['pais_origen']); ?>" required>
                             <input type="text" name="descripcion_edit" value="<?php echo htmlspecialchars($row['descripcion']); ?>" required>
                             <button type="submit">Guardar</button>
                             <button type="button" onclick="hideEdit(<?php echo $row['id']; ?>)">Cancelar</button>
@@ -204,7 +240,7 @@ if ($stmt) {
         <?php endwhile; ?>
         <?php else: ?>
             <tr>
-                <td colspan="5">No se pudieron cargar los productos.</td>
+                <td colspan="10">No se pudieron cargar los productos.</td>
             </tr>
         <?php endif; ?>
         </tbody>
