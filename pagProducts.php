@@ -48,11 +48,20 @@ if (isset($_GET['deleted'])) {
 if (isset($_POST['accion'])) {
     $accion = $_POST['accion'];
     if ($accion == 'insertar' || $accion == 'crear') {
-        $nombre = isset($_POST['nombre']) ? mysqli_real_escape_string($x, $_POST['nombre']) : '';
-        $precio = isset($_POST['precio']) ? mysqli_real_escape_string($x, $_POST['precio']) : '';
-        $descripcion = isset($_POST['descripcion']) ? mysqli_real_escape_string($x, $_POST['descripcion']) : '';
-        $sql_insert = "INSERT INTO productos (nombre, precio, descripcion) VALUES ('$nombre', '$precio', '$descripcion')";
-        if (mysqli_query($x, $sql_insert)) {
+        $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
+        $precio = isset($_POST['precio']) ? floatval($_POST['precio']) : 0;
+        $descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
+
+        $stmt = mysqli_prepare($x, "INSERT INTO productos (nombre, precio, descripcion) VALUES (?, ?, ?)");
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "sds", $nombre, $precio, $descripcion);
+            $ok = mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+        } else {
+            $ok = false;
+        }
+
+        if ($ok) {
             header("Location: pagProducts.php?added=1");
             exit();
         } else {
@@ -61,10 +70,20 @@ if (isset($_POST['accion'])) {
         }
     } elseif ($accion == 'editar') {
         $id_edit = isset($_POST['id_edit']) ? intval($_POST['id_edit']) : 0;
-        $nombre_edit = isset($_POST['nombre_edit']) ? mysqli_real_escape_string($x, $_POST['nombre_edit']) : '';
-        $precio_edit = isset($_POST['precio_edit']) ? mysqli_real_escape_string($x, $_POST['precio_edit']) : '';
-        $sql_update = "UPDATE productos SET nombre='$nombre_edit', precio='$precio_edit' WHERE id='$id_edit'";
-        if (mysqli_query($x, $sql_update)) {
+        $nombre_edit = isset($_POST['nombre_edit']) ? trim($_POST['nombre_edit']) : '';
+        $precio_edit = isset($_POST['precio_edit']) ? floatval($_POST['precio_edit']) : 0;
+        $descripcion_edit = isset($_POST['descripcion_edit']) ? trim($_POST['descripcion_edit']) : '';
+
+        $stmt = mysqli_prepare($x, "UPDATE productos SET nombre = ?, precio = ?, descripcion = ? WHERE id = ?");
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "sdsi", $nombre_edit, $precio_edit, $descripcion_edit, $id_edit);
+            $ok = mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+        } else {
+            $ok = false;
+        }
+
+        if ($ok) {
             header("Location: pagProducts.php?updated=1");
             exit();
         } else {
@@ -73,8 +92,17 @@ if (isset($_POST['accion'])) {
         }
     } elseif ($accion == 'eliminar') {
         $id_delete = isset($_POST['id_delete']) ? intval($_POST['id_delete']) : 0;
-        $sql_delete = "DELETE FROM productos WHERE id='$id_delete'";
-        if (mysqli_query($x, $sql_delete)) {
+
+        $stmt = mysqli_prepare($x, "DELETE FROM productos WHERE id = ?");
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "i", $id_delete);
+            $ok = mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+        } else {
+            $ok = false;
+        }
+
+        if ($ok) {
             header("Location: pagProducts.php?deleted=1");
             exit();
         } else {
@@ -85,7 +113,13 @@ if (isset($_POST['accion'])) {
 }
 
 // Fetch products
-$result = mysqli_query($x, "SELECT * FROM productos ORDER BY id DESC");
+$result = false;
+$stmt = mysqli_prepare($x, "SELECT id, nombre, precio, descripcion FROM productos ORDER BY id DESC");
+if ($stmt) {
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    mysqli_stmt_close($stmt);
+}
 
 ?>
 
@@ -137,6 +171,7 @@ $result = mysqli_query($x, "SELECT * FROM productos ORDER BY id DESC");
             </tr>
         </thead>
         <tbody>
+        <?php if ($result): ?>
         <?php while($row = mysqli_fetch_assoc($result)): ?>
             <tr id="row-<?php echo $row['id']; ?>">
                 <td><?php echo $row['id']; ?></td>
@@ -167,6 +202,11 @@ $result = mysqli_query($x, "SELECT * FROM productos ORDER BY id DESC");
                 </td>
             </tr>
         <?php endwhile; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="5">No se pudieron cargar los productos.</td>
+            </tr>
+        <?php endif; ?>
         </tbody>
     </table>
 
