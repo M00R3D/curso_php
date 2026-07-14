@@ -1,3 +1,4 @@
+<!-- pdobd.php -->
 <!DOCTYPE html> 
 <html lang="en">
 <head>
@@ -7,6 +8,7 @@
 </head>
 <body>
     <?php
+        $busqueda=$_GET['buscar'] ?? '';
         try {
             $conexion = new PDO("mysql:host=localhost;dbname=pdobd", "root", "");
             //en esta linea usamos PDO para conectarnos a la base de datos, en este caso es mysql, el host es localhost, el nombre de la base de datos es pdobd, el usuario es root y la contraseña es vacía
@@ -19,7 +21,7 @@
             $consulta ="SELECT NOMBRE, PRECIO, DESCRIPCION, ID FROM PRODUCTOS WHERE NOMBRE = ?";
 
             $resultado = $conexion->prepare($consulta);
-            $resultado->execute(array("AGUA"));
+            $resultado->execute(array($busqueda));
             while($registro=$resultado->fetch(PDO::FETCH_ASSOC)){
 
                 echo "<table border='1'>";
