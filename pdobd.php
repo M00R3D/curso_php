@@ -8,7 +8,8 @@
 </head>
 <body>
     <?php
-        $busqueda=$_GET['buscar'] ?? '';
+        $nombre=$_GET['nombre'] ?? '';
+        $precio=$_GET['precio'] ?? '';
         try {
             $conexion = new PDO("mysql:host=localhost;dbname=pdobd", "root", "");
             //en esta linea usamos PDO para conectarnos a la base de datos, en este caso es mysql, el host es localhost, el nombre de la base de datos es pdobd, el usuario es root y la contraseña es vacía
@@ -18,10 +19,9 @@
 
             echo "Conexión establecida";
 
-            $consulta ="SELECT NOMBRE, PRECIO, DESCRIPCION, ID FROM PRODUCTOS WHERE NOMBRE = ?";
-
+            $consulta ="SELECT NOMBRE, PRECIO, DESCRIPCION, ID FROM PRODUCTOS WHERE NOMBRE = :n_prod AND PRECIO = :p_prod";
             $resultado = $conexion->prepare($consulta);
-            $resultado->execute(array($busqueda));
+            $resultado->execute(array(':n_prod' => $nombre, ':p_prod' => $precio));
             while($registro=$resultado->fetch(PDO::FETCH_ASSOC)){
 
                 echo "<table border='1'>";
