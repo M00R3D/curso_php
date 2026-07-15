@@ -1,0 +1,4 @@
+en php get manda por la url los datos de busqueda del formulario, lo cual puede ser un riesgo si se trabaja con
+informacion sensible como contraseñas, o puede generar una url demasiado larga
+
+en esos casos es mejor usar post que no muestra los datos del formulario en la url

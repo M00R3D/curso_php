@@ -27,7 +27,7 @@
     </style>
 </head>
 <body>
-    <form action="pdobd.php" method="get">
+    <form action="pdobd.php" method="post">
         <table>
             <tr>
                 <td><label>Buscar por nombre:<input type="text" name="nombre"></label></td>

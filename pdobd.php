@@ -8,12 +8,13 @@
 </head>
 <body>
     <?php
-        $nombre=$_GET['nombre'] ?? '';
-        $precio=$_GET['precio'] ?? '';
+        $nombre=$_POST['nombre'] ?? '';
+        $precio=$_POST['precio'] ?? '';
         try {
             $conexion = new PDO("mysql:host=localhost;dbname=pdobd", "root", "");
             //en esta linea usamos PDO para conectarnos a la base de datos, en este caso es mysql, el host es localhost, el nombre de la base de datos es pdobd, el usuario es root y la contraseña es vacía
-
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            //esta linea sirve para que PDO nos muestre los errores en caso de que ocurra alguno tratandolo como objeto, es decir, que nos muestre el error en un formato más legible y fácil de entender
             $conexion->exec("SET CHARACTER SET utf8");
             //esta linea sirve para que los acentos y caracteres especiales se muestren correctamente
 
