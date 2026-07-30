@@ -6,11 +6,13 @@
         protected $conexion_db;
 
         public function __construct(){
-                $this->conexion_db = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+                $this->conexion_db = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME.";charset=".DB_CHARSET, DB_USER, DB_PASS);
 
-                if($this->conexion_db->connect_errno){
-                    echo "Fallo al conectar a MySQL: (" . $this->conexion_db->connect_errno . ") " . $this->conexion_db->connect_error;
-            }
+                try {
+                    $this->conexion_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                } catch (PDOException $e) {
+                    echo "Fallo al conectar a MySQL: " . $e->getMessage();
+                }
         }
     }
 ?>

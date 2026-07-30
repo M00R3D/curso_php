@@ -12,5 +12,13 @@ class getProductos extends Conexion{
         }
         return $productos;
     }
+    public function get_productos_pais($pais){
+        $sql = "SELECT * FROM productos WHERE pais = '$pais'";
+        $resultado = $this->conexion_db->query($sql);
+        $resultado->execute(array());
+        $productos = $resultado->fetchAll(PDO::FETCH_ASSOC);
+        $resultado->closeCursor();
+        return $productos;
+    }
 }
 ?>
