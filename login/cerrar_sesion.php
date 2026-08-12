@@ -1,3 +1,4 @@
+<!-- login\cerrar_sesion.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,10 +8,17 @@
 </head>
 <body>
     <?php
+
     session_start();
+
+    session_unset();
+
     session_destroy();
-    header("Location: login.php");
+
+    header("Location: onepagelogin.php");
+
     exit();
+
     ?>
 </body>
 </html>
