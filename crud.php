@@ -1,3 +1,4 @@
+<!-- crud.php -->
 <?php
 
 $servidor = "localhost";
@@ -70,7 +71,11 @@ $resultado = $conexion->query($sql);
 <body>
 
     <h1>Datos de usuarios</h1>
-
+                <a href="insertar.php"
+                    class="btn insertar"
+                >
+                        Insertar
+                </a>
     <table>
         <thead>
             <tr>
@@ -97,11 +102,7 @@ $resultado = $conexion->query($sql);
                 <td><?php echo $fila["direccion"]; ?></td>
 
                 <td>
-                    <a href="insertar.php"
-                    class="btn insertar"
-                    >
-                        Insertar
-                    </a>
+                    
                     <a 
                         class="btn editar"
                         href="editar.php?id=<?php echo $fila["id"]; ?>"
