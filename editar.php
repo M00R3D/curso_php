@@ -1,3 +1,4 @@
+<!-- editar.php -->
 <?php
 
 $id = $_GET['id'];
